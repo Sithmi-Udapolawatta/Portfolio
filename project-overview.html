@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sithmi Udapolawatta | UI/UX Designer</title>
+
+  <link rel="stylesheet" href="styles/project-style.css">
+  <link rel="icon" type="image/x-icon" href="images/logo_header.png">
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════
+       NAV — same markup/classes as index.html so
+       it inherits the exact same look. Links point
+       to the 4 sections on THIS page instead.
+  ══════════════════════════════════════════ -->
+  <nav id="cs-nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="images/logo.png" alt="SU monogram" class="nav-logo-img" />
+        <span class="nav-logo-text">
+          <span class="nav-logo-name">Sithmi Udapolawatta</span>
+          <span class="nav-logo-role">UI/UX Designer</span>
+        </span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#section-overview"     class="nav-link">Overview</a></li>
+        <li><a href="#section-role"         class="nav-link">My Role</a></li>
+        <li><a href="#section-design-system" class="nav-link">Design System</a></li>
+        <li><a href="#section-designs"      class="nav-link">Designs</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="index.html" class="nav-back-btn">
+          <i data-lucide="arrow-left" class="icon-xs"></i>
+          <span>Back to portfolio</span>
+        </a>
+        <a href="index.html#contact" class="nav-cta">
+          Hire me <i data-lucide="arrow-right" class="icon-xs"></i>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- ══════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════ -->
+  <header class="cs-hero" id="cs-hero">
+    <div class="cs-hero-overlay" aria-hidden="true"></div>
+    <div class="cs-inner cs-hero-content">
+
+      <p class="cs-breadcrumb">
+        <a href="index.html#projects">Projects</a>
+        <i data-lucide="chevron-right" class="icon-xs"></i>
+        <span id="bc-title">Case Study</span>
+      </p>
+
+      <div class="cs-tags" id="hero-tags"></div>
+
+      <h1 class="cs-title" id="cs-project-title">Project Title</h1>
+      <p class="cs-subtitle" id="cs-project-tagline">A short compelling tagline about this project.</p>
+
+      <div class="cs-meta-row" id="cs-meta-row"></div>
+
+    </div>
+  </header>
+
+
+  <!-- ══════════════════════════════════════════
+       MAIN CONTENT — each section is full-bleed
+       (like index.html's <section> pattern) so it
+       can carry its own background color.
+  ══════════════════════════════════════════ -->
+  <main class="cs-main">
+
+    <!-- 1. PROJECT OVERVIEW — image left, content right -->
+    <section class="cs-section reveal" id="section-overview">
+      <div class="section-inner">
+        <div class="split-block">
+
+          <div class="split-media">
+            <img id="ov-image" src="" alt="">
+          </div>
+
+          <div class="split-content">
+            <div class="cs-section-label">Overview</div>
+            <h2 class="cs-section-title">Everything that shaped this <em>project</em></h2>
+
+            <div class="info-story" id="ov-story"></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 2. MY ROLE — content left, image right -->
+    <section class="cs-section cs-role-bg reveal" id="section-role">
+      <div class="section-inner">
+        <div class="split-block">
+
+          <div class="split-content">
+            <div class="cs-section-label">My Role</div>
+            <h2 class="cs-section-title">The part I <em>played</em></h2>
+
+            <ul class="role-list" id="role-list"></ul>
+
+            <div class="tool-chips" id="role-tools"></div>
+          </div>
+
+          <div class="split-media">
+            <img id="role-image" src="" alt="">
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 3. DESIGN SYSTEM -->
+    <section class="cs-section cs-ds-bg reveal" id="section-design-system">
+      <div class="section-inner">
+        <div class="cs-section-label">Design System</div>
+        <h2 class="cs-section-title">A consistent design <em>language</em></h2>
+
+        <div class="ds-grid" id="ds-grid"></div>
+      </div>
+    </section>
+
+
+    <!-- 4. DESIGNS -->
+    <section class="cs-section cs-designs reveal" id="section-designs">
+      <div class="section-inner">
+        <div class="cs-section-label">Designs</div>
+        <h2 class="cs-section-title">A closer look <em>inside</em></h2>
+
+        <div class="screens-viewer" id="screens-viewer"></div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ══════════════════════════════════════════
+       FOOTER — identical markup to index.html
+  ══════════════════════════════════════════ -->
+  <footer>
+    <div class="footer-inner">
+      <span class="footer-brand">Sithmi Udapolawatta</span>
+      <span class="footer-copy">Designed with intention &nbsp;·&nbsp; 2026</span>
+      <div class="footer-right">UI/UX Designer</div>
+    </div>
+  </footer>
+
+  <!-- Scroll to top button -->
+  <button id="scroll-top" class="scroll-top" aria-label="Scroll to top">
+    <i data-lucide="arrow-up" class="icon-sm"></i>
+  </button>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightbox-close" aria-label="Close">
+      <i data-lucide="x" class="icon-sm"></i>
+    </button>
+    <img id="lightbox-img" src="" alt="">
+  </div>
+
+  <!-- Lucide icons (SVG icon library) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script src="scripts/project-script.js"></script>
+</body>
+</html>

@@ -1,0 +1,560 @@
+/* ============================================
+   CASE STUDY PAGE — project-style.css
+   Sithmi Udapolawatta Portfolio
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ── Reset & tokens ──────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --accent:  #0f3460;
+  --accent2: #48b4e0;
+  --accent3: #0a7abf;
+  --ink:     #0b0f14;
+  --ink2:    #344152;
+  --muted:   #7a8a9a;
+  --bg:      #f4f7fa;
+  --surface: #ffffff;
+  --tag-bg:  #ddeef8;
+  --tag-fg:  #0f3460;
+  --border:  #d6e4ef;
+  --nav-h:   68px;
+  --serif:   'Fraunces', Georgia, serif;
+  --sans:    'DM Sans', system-ui, sans-serif;
+  --max-w:   1200px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.75;
+  overflow-x: hidden;
+}
+
+.icon-xs { width: 14px; height: 14px; stroke-width: 2.2; flex-shrink: 0; vertical-align: middle; }
+.icon-sm { width: 16px; height: 16px; stroke-width: 2;   flex-shrink: 0; }
+
+/* ── Shared inner wrapper ─────────────────── */
+.cs-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 2rem;
+}
+
+/* ── Scroll reveal ──────────────────────── */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s cubic-bezier(.16,.8,.3,1), transform .7s cubic-bezier(.16,.8,.3,1); }
+.reveal.visible { opacity: 1; transform: none; }
+
+
+/* ════════════════════════════════════════════
+   NAV — identical structure/classes to index.html
+   so the header matches the main site exactly.
+════════════════════════════════════════════ */
+#cs-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(244,247,250,0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  height: var(--nav-h);
+}
+
+.nav-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  height: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 0rem;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.nav-logo-img {
+  height: 44px;
+  width: 44px;
+  object-fit: contain;
+  flex-shrink: 0;
+  padding-right: 0.65rem;
+  border-right: 1px solid var(--border);
+}
+.nav-logo-text { display: flex; flex-direction: column; gap: 6px; line-height: 1; }
+.nav-logo-name {
+  font-family: var(--serif); font-size: 1rem; font-weight: 600;
+  color: var(--accent); letter-spacing: -0.01em;
+}
+.nav-logo-role {
+  font-family: var(--sans); font-size: 0.68rem; font-weight: 500;
+  color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase;
+}
+
+.nav-links { display: flex; gap: 0.25rem; list-style: none; }
+.nav-link {
+  position: relative;
+  font-size: 0.875rem; font-weight: 400;
+  color: var(--ink2); text-decoration: none;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-link::after {
+  content: '';
+  position: absolute; bottom: -2px; left: 50%; right: 50%;
+  height: 2px; border-radius: 2px;
+  background: var(--accent3);
+  transition: left 0.25s ease, right 0.25s ease;
+}
+.nav-link:hover { color: var(--accent3); }
+.nav-link.active { color: var(--accent); font-weight: 600; }
+.nav-link.active::after { left: 0.75rem; right: 0.75rem; }
+
+.nav-cta {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: var(--accent); color: #fff;
+  font-family: var(--sans); font-size: 0.82rem; font-weight: 500;
+  padding: 0.55rem 1.2rem; border-radius: 100px; text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+.nav-cta:hover { background: var(--accent3); transform: translateY(-1px); }
+
+/* Right-side action group: Back to portfolio + Hire me, sitting together */
+.nav-actions { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+
+.nav-back-btn {
+  display: inline-flex; align-items: center; gap: .45rem;
+  font-size: .82rem; font-weight: 500; color: var(--accent);
+  text-decoration: none;
+  padding: .55rem 1.1rem; border-radius: 100px;
+  border: 1.5px solid var(--accent); background: var(--surface);
+  transition: border-color .2s, color .2s, transform .2s;
+}
+.nav-back-btn:hover { border-color: var(--accent2); color: var(--accent2); transform: translateX(-2px); }
+
+
+/* ════════════════════════════════════════════
+   HERO
+════════════════════════════════════════════ */
+.cs-hero {
+  min-height: 66vh;
+  padding: calc(var(--nav-h) + 3rem) 0 3.5rem;
+  display: flex; align-items: flex-end;
+  position: relative; overflow: hidden;
+  background-color: var(--accent);
+  background-size: cover;
+  background-position: center;
+}
+.cs-hero-overlay {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(6,9,14,0.55) 0%, rgba(6,9,14,0.72) 45%, rgba(6,9,14,0.95) 100%);
+}
+.cs-hero-content { position: relative; z-index: 1; }
+
+.cs-breadcrumb {
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-size: .75rem; color: rgba(255,255,255,0.65); margin-bottom: 1.2rem;
+}
+.cs-breadcrumb a { color: #fff; text-decoration: none; }
+.cs-breadcrumb a:hover { text-decoration: underline; }
+.cs-breadcrumb #bc-title { color: rgba(255,255,255,0.65); }
+
+.cs-tags { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.cs-tag {
+  font-size: .72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .05em;
+  background: rgba(255,255,255,0.14); color: #fff;
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: .25rem .75rem; border-radius: 100px;
+}
+
+.cs-title {
+  font-family: var(--serif);
+  font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+  font-weight: 300; line-height: 1.1; letter-spacing: -.03em;
+  color: #fff; margin-bottom: 1rem;
+}
+.cs-title em { font-style: italic; color: var(--accent2); }
+
+.cs-subtitle {
+  font-size: 1.1rem; color: rgba(255,255,255,0.85);
+  max-width: 640px; line-height: 1.7; margin-bottom: 2rem;
+}
+
+.cs-meta-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+.cs-meta-pill {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: .78rem; font-weight: 500; color: #fff;
+  background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  padding: .35rem .9rem; border-radius: 100px;
+}
+.cs-meta-pill svg { color: var(--accent2); }
+
+
+/* ════════════════════════════════════════════
+   MAIN LAYOUT — each .cs-section is full-bleed
+   (like index.html's <section>), with its own
+   .section-inner max-width wrapper (no padding —
+   the horizontal gutter comes from the section).
+════════════════════════════════════════════ */
+.cs-main { padding-top: 0; }
+
+.section-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.cs-section { padding: 6rem 2rem; }
+
+.cs-section-label {
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--accent3); margin-bottom: 0.6rem;
+}
+.cs-section-title {
+  font-family: var(--serif); font-size: clamp(2rem, 3.5vw, 2.8rem);
+  font-weight: 300; line-height: 1.15; letter-spacing: -0.02em;
+  color: var(--ink); max-width: 600px; margin-bottom: 3rem;
+}
+.cs-section-title em { font-style: italic; color: var(--accent3); }
+
+.cs-body {
+  font-size: 1rem; color: var(--ink2);
+  line-height: 1.85; max-width: 660px; margin-bottom: 1.8rem;
+}
+
+/* My Role — a light, near-white blue wash to separate it from Overview */
+.cs-role-bg { background: #eef6fb; }
+
+/* Design System — plain white background, same treatment as every
+   other section (no special dark theming) */
+.cs-ds-bg { background: var(--surface); }
+
+
+/* ════════════════════════════════════════════
+   OVERVIEW & MY ROLE — shared "split" layout.
+   DOM order decides which side each half lands
+   on: image-then-content = image left; content-
+   then-image = content left. No modifier needed.
+════════════════════════════════════════════ */
+.split-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+.split-media img {
+  width: 100%; display: block; border-radius: 1.25rem;
+  box-shadow: 0 30px 60px -20px rgba(15, 52, 96, 0.30);
+}
+.split-content { min-width: 0; }
+
+/* Story blocks: reused for Scope / User Roles / Key Screens etc. */
+.info-story { margin-top: 2.2rem; display: flex; flex-direction: column; gap: 1.8rem; }
+.info-story-block { display: grid; grid-template-columns: 110px 1fr; gap: 1.5rem; }
+.info-story-tag {
+  font-family: var(--serif); font-style: italic; font-size: .95rem;
+  color: var(--accent3); padding-top: .1rem;
+}
+.info-story-block p { font-size: .95rem; color: var(--ink2); line-height: 1.8; }
+
+/* My Role — responsibilities list + tool chips */
+.role-list { list-style: none; display: flex; flex-direction: column; gap: .75rem; margin: .5rem 0 1.6rem; }
+.role-list li { display: flex; gap: .65rem; font-size: .95rem; color: var(--ink2); line-height: 1.65; }
+.role-list li::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent3); margin-top: .6rem; flex-shrink: 0;
+}
+.tool-chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+.tool-chip {
+  font-size: .78rem; font-weight: 500; color: var(--accent);
+  background: var(--tag-bg); border: 1px solid var(--border);
+  padding: .4rem .9rem; border-radius: 100px;
+}
+
+
+/* ════════════════════════════════════════════
+   DESIGN SYSTEM
+════════════════════════════════════════════ */
+.ds-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+  margin-top: 2.5rem;
+}
+.ds-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  padding: 1.6rem;
+}
+.ds-block--wide { grid-column: 1 / -1; }
+.ds-block-title {
+  font-family: var(--serif); font-size: 1.05rem; font-weight: 500;
+  color: var(--ink); margin-bottom: 1.1rem;
+}
+.ds-swatches { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
+.ds-swatch { display: flex; flex-direction: column; gap: .5rem; min-width: 0; }
+.ds-swatch-color {
+  display: block; width: 100%; height: 56px; border-radius: .65rem;
+  border: 1px solid rgba(0,0,0,.06);
+}
+.ds-swatch strong { font-size: .74rem; font-weight: 600; color: var(--ink2); }
+.ds-swatch small { font-size: .65rem; color: var(--muted); font-family: monospace; letter-spacing: .01em; }
+
+.ds-image { width: 100%; border-radius: .85rem; display: block; }
+.ds-placeholder {
+  border: 1.5px dashed var(--border); border-radius: .85rem;
+  padding: 2.75rem 1rem; text-align: center;
+  font-size: .8rem; color: var(--muted);
+}
+
+.ds-type-samples { display: flex; flex-direction: column; gap: 1rem; }
+.ds-type-sample { display: flex; align-items: baseline; gap: 1rem; border-bottom: 1px dashed var(--border); padding-bottom: .8rem; }
+.ds-type-sample:last-child { border-bottom: none; padding-bottom: 0; }
+.ds-type-label { font-size: .68rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); width: 64px; flex-shrink: 0; }
+.ds-type-preview { font-family: var(--serif); color: var(--ink); }
+
+
+/* ════════════════════════════════════════════
+   DESIGNS — single device viewer + "other
+   screens" picker column, with an optional
+   Mobile / Web tab switch. A soft grey-blue wash
+   to set it apart from the plain white sections.
+════════════════════════════════════════════ */
+.cs-designs { background: #eef1f5; }
+.cs-designs .cs-body { max-width: 620px; }
+
+.platform-tabs {
+  display: inline-flex; gap: .3rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 100px; padding: .3rem; margin: 0 0 .5rem;
+}
+.platform-tab {
+  display: inline-flex; align-items: center; gap: .45rem;
+  border: none; background: none; cursor: pointer;
+  font-family: var(--sans); font-size: .82rem; font-weight: 500;
+  color: var(--ink2); padding: .5rem 1.3rem; border-radius: 100px;
+  transition: background .2s, color .2s;
+}
+.platform-tab.active { background: var(--accent); color: #fff; }
+.platform-tab:not(.active):hover { color: var(--accent); }
+
+.screens-viewer-panel { display: none; }
+.screens-viewer-panel.active { display: block; }
+
+.screens-shell {
+  display: grid;
+  grid-template-columns: auto minmax(260px, 360px);
+  gap: 3.5rem;
+  align-items: start;
+  justify-content: start;
+}
+
+/* Mobile screens are narrow, so left-aligning the whole block leaves a
+   huge empty gap on the right — center the device+caption pair as a
+   unit instead. Web screens keep their left alignment with the title. */
+.screens-shell--center { justify-content: center; }
+
+/* Mobile screens stay centered in their column; web screens align to
+   the left so the frame lines up with the section title above it. */
+.viewer-frame-col { display: flex; justify-content: center; min-width: 0; }
+.viewer-frame-col:has(.screen-frame--web) { justify-content: flex-start; }
+
+.viewer-side {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2.2rem;
+}
+
+.viewer-caption { display: flex; flex-direction: column; gap: .55rem; }
+.viewer-index { font-family: var(--serif); font-style: italic; font-size: .85rem; color: var(--accent3); }
+.viewer-caption h3 { font-family: var(--serif); font-weight: 400; font-size: 1.4rem; color: var(--ink); letter-spacing: -.01em; }
+.viewer-caption p { font-size: 1.05rem; color: var(--ink2); line-height: 1.8; }
+
+.viewer-next-label {
+  font-size: .68rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 1rem;
+}
+.viewer-next-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: .65rem; }
+.next-square {
+  width: 100%; aspect-ratio: 1 / 1; border-radius: .7rem; overflow: hidden;
+  border: 2px solid var(--border); padding: 0; cursor: pointer; background: var(--surface);
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+.next-square img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.next-square:hover { border-color: var(--accent3); transform: translateY(-2px); }
+.next-square.active { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15,52,96,.14); }
+
+/* Device frame — web (browser chrome) */
+.screen-frame {
+  border-radius: 16px;
+  overflow: hidden;
+  background: #1e2330;
+  box-shadow:
+    0 40px 70px -20px rgba(15, 52, 96, 0.30),
+    0 10px 24px -10px rgba(15, 52, 96, 0.16);
+  transition: box-shadow .4s;
+  width: 100%;
+}
+.screen-frame--web .screen-frame-bar {
+  display: flex; align-items: center; gap: .4rem;
+  padding: .65rem .9rem; background: #2a3042;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.sf-dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.15); }
+.sf-dot:nth-child(1) { background: #ff5f57; }
+.sf-dot:nth-child(2) { background: #febc2e; }
+.sf-dot:nth-child(3) { background: #28c840; }
+.sf-address {
+  flex: 1; display: flex; align-items: center; gap: .3rem; justify-content: center;
+  font-size: .68rem; color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.07); border-radius: 4px;
+  padding: .28rem .8rem; max-width: 260px; margin: 0 auto;
+}
+.sf-address svg { width: 11px; height: 11px; }
+
+.screen-frame-body { position: relative; background: #f0f2f5; overflow: hidden; }
+.screen-frame-body img { width: 100%; display: block; }
+
+.screen-expand {
+  position: absolute; right: .85rem; bottom: .85rem;
+  width: 38px; height: 38px; border-radius: 50%;
+  background: rgba(11,15,20,0.55); border: 1px solid rgba(255,255,255,0.25);
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; backdrop-filter: blur(4px);
+  opacity: 0; transform: scale(.85);
+  transition: opacity .2s, transform .2s, background .2s;
+}
+.viewer-frame-col:hover .screen-expand { opacity: 1; transform: scale(1); }
+.screen-expand:hover { background: var(--accent3); }
+.screen-expand svg { width: 16px; height: 16px; }
+
+/* Device frame — web. Fixed-height "window": the frame itself never
+   grows to match a tall screenshot. It no longer scrolls internally —
+   that used to trap the page's scroll gesture whenever the cursor sat
+   over the device — so a tall screenshot is simply cropped instead,
+   same as the mobile frame. */
+.screen-frame--web { width: 640px; max-width: 100%; margin: 0; }
+.screen-frame--web .screen-frame-body { height: 400px; }
+.screen-frame--web .screen-frame-body img { height: 100%; object-fit: cover; object-position: top; }
+
+/* Device frame — mobile (phone bezel). Fixed 270 × 480 size, with the
+   screenshot cropped to cover the frame like a real device screen would. */
+.screen-frame--mobile {
+  width: 270px; max-width: 100%; margin: 0 auto; border-radius: 26px;
+  padding: 9px; background: #14171f;
+}
+.screen-frame--mobile .screen-frame-bar { display: none; }
+.screen-frame--mobile .screen-frame-body {
+  height: 500px;
+  border-radius: 18px;
+}
+.screen-frame--mobile .screen-frame-body img {
+  height: 100%; object-fit: cover;
+}
+.screen-frame--mobile .screen-frame-body::before {
+  content: ''; position: absolute; top: 7px; left: 50%; transform: translateX(-50%);
+  width: 58px; height: 14px; border-radius: 8px; background: #14171f; z-index: 2;
+}
+
+/* Lightbox */
+.lightbox {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(11,15,20,0.92);
+  display: flex; align-items: center; justify-content: center;
+  padding: 3rem 1.5rem;
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s ease;
+}
+.lightbox.open { opacity: 1; pointer-events: auto; }
+.lightbox img {
+  max-width: min(900px, 90vw); max-height: 86vh;
+  border-radius: 12px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+}
+.lightbox-close {
+  position: absolute; top: 1.5rem; right: 1.75rem;
+  width: 42px; height: 42px; border-radius: 50%;
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.25);
+  color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: background .2s;
+}
+.lightbox-close:hover { background: rgba(255,255,255,0.2); }
+
+
+/* ════════════════════════════════════════════
+   FOOTER — identical markup/classes to index.html
+════════════════════════════════════════════ */
+footer {
+  padding: 2rem;
+  border-top: 1px solid var(--border);
+}
+.footer-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 0.8rem; color: var(--muted);
+  flex-wrap: wrap; gap: 0.5rem;
+}
+.footer-brand {
+  font-family: var(--serif); font-size: 1.05rem; font-weight: 600; color: var(--accent);
+}
+.footer-copy { font-family: var(--serif); font-style: italic; }
+
+
+/* ════════════════════════════════════════════
+   SCROLL-TO-TOP BUTTON — identical to index.html
+════════════════════════════════════════════ */
+.scroll-top {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 300;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--accent); color: #fff; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(15,52,96,0.25);
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.3s, transform 0.3s, background 0.2s;
+  pointer-events: none;
+}
+.scroll-top:hover { background: var(--accent3); }
+.scroll-top.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
+
+
+/* ════════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════════ */
+@media (max-width: 980px) {
+  .split-block { grid-template-columns: 1fr; }
+  .info-story-block { grid-template-columns: 1fr; gap: .4rem; }
+
+  .screens-shell { grid-template-columns: 1fr; }
+  .viewer-next-grid { grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); }
+
+  .ds-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 860px) {
+  .cs-inner { padding: 0 1.25rem; }
+}
+
+/* Nav breakpoint matches index.html exactly */
+@media (max-width: 768px) {
+  .nav-inner { padding: 0 1.25rem; }
+  .nav-links { display: none; }
+  .nav-back-btn span { display: none; }
+}
+
+@media (max-width: 540px) {
+  .nav-logo-text { display: none; }
+  .screen-frame--web .screen-frame-body { height: 320px; }
+  .ds-grid { grid-template-columns: 1fr; }
+  .ds-swatches { grid-template-columns: repeat(2, 1fr); }
+}
