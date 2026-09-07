@@ -77,7 +77,7 @@
           View my work
           <i data-lucide="arrow-down" class="icon-sm"></i>
         </a>
-        <a href="https://drive.google.com/uc?export=download&id=1rUqpAvWfyhwjcrOUR746p4bVFAGrJBRV"
+        <a href="https://drive.google.com/uc?export=download&id=17gjDXksY5Lw4jwgApyWdQK4rAiV9Wd3Z"
            class="btn-ghost" target="_blank" rel="noopener" download>
           <i data-lucide="download" class="icon-sm"></i>
           Download Resume
@@ -241,117 +241,94 @@
       <div class="process-header">
         <p class="section-label">My Design Process</p>
         <h2 class="section-title process-header-title">From idea to <em>impact</em></h2>
-        <p class="process-subtitle">A user-centered process that helps me create thoughtful, functional and meaningful digital experiences.</p>
       </div>
 
       <div class="process-flow">
 
-        <!-- Decorative connector — hidden below the 4-column breakpoint -->
-        <svg class="process-connector" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <!-- Connector lines are drawn by JS (script.js) so they can
+             follow the cards' actual rendered positions/heights. -->
+        <svg class="process-connector" aria-hidden="true">
           <defs>
-            <linearGradient id="processFlowGradient" x1="0" y1="0" x2="1" y2="0">
+            <linearGradient id="processFlowGradient" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="0">
               <stop offset="0%"   class="pg-stop-light" />
               <stop offset="50%"  class="pg-stop-dark" />
               <stop offset="100%" class="pg-stop-light" />
             </linearGradient>
           </defs>
-          <path class="process-connector-line" d="M4.5,0 L81,0" />
-          <path class="process-connector-line" d="M81,0 C 98,10 98,90 4.5,100" />
-          <path class="process-connector-line" d="M4.5,100 L81,100" />
-          <path class="process-connector-line process-connector-arrow" d="M81,100 L95,100 M90,95.5 L95,100 L90,104.5" />
         </svg>
-        <span class="process-dot" style="left:17.25%; top:0%;"></span>
-        <span class="process-dot" style="left:42.75%; top:0%;"></span>
-        <span class="process-dot" style="left:68.25%; top:0%;"></span>
-        <span class="process-dot" style="left:17.25%; top:100%;"></span>
-        <span class="process-dot" style="left:42.75%; top:100%;"></span>
-        <span class="process-dot" style="left:68.25%; top:100%;"></span>
 
-        <div class="process-flow-step reveal">
+        <div class="process-flow-step">
           <div class="process-flow-icon" style="animation-delay:0.0s;"><i data-lucide="file-text" class="icon-md"></i></div>
           <div class="process-flow-head">
             <span class="process-flow-num">01</span>
-            <h3 class="process-flow-title">Understand Requirements</h3>
+            <h3 class="process-flow-title">Discovery</h3>
           </div>
-          <p class="process-flow-desc">I carefully go through the client's requirements to understand the goals, scope and expectations.</p>
+          <p class="process-flow-desc">Go through the client's requirements closely to understand what the project needs to achieve.</p>
         </div>
 
-        <div class="process-flow-step reveal">
-          <div class="process-flow-icon" style="animation-delay:0.9s;"><i data-lucide="search" class="icon-md"></i></div>
+        <div class="process-flow-step">
+          <div class="process-flow-icon" style="animation-delay:1.2s;"><i data-lucide="search" class="icon-md"></i></div>
           <div class="process-flow-head">
             <span class="process-flow-num">02</span>
             <h3 class="process-flow-title">Research</h3>
           </div>
-          <p class="process-flow-desc">I research the project, industry and related context to gather insights and opportunities.</p>
+          <p class="process-flow-desc">Research the project domain and industry so decisions are grounded in real context.</p>
         </div>
 
-        <div class="process-flow-step reveal">
-          <div class="process-flow-icon" style="animation-delay:1.8s;"><i data-lucide="pen-tool" class="icon-md"></i></div>
+        <div class="process-flow-step">
+          <div class="process-flow-icon" style="animation-delay:2.4s;"><i data-lucide="pen-tool" class="icon-md"></i></div>
           <div class="process-flow-head">
             <span class="process-flow-num">03</span>
-            <h3 class="process-flow-title">Ideate &amp; Sketch</h3>
+            <h3 class="process-flow-title">Ideation</h3>
           </div>
-          <p class="process-flow-desc">I work out the system flow and sketch my ideas on paper to visualize the structure.</p>
+          <p class="process-flow-desc">Work out the system flow and sketch early ideas on paper before touching a screen.</p>
         </div>
 
-        <div class="process-flow-step reveal">
-          <div class="process-flow-icon" style="animation-delay:2.7s;"><i data-lucide="layout-template" class="icon-md"></i></div>
+        <div class="process-flow-step">
+          <div class="process-flow-icon" style="animation-delay:3.6s;"><i data-lucide="layout-template" class="icon-md"></i></div>
           <div class="process-flow-head">
             <span class="process-flow-num">04</span>
-            <h3 class="process-flow-title">Design</h3>
+            <h3 class="process-flow-title">Wireframing</h3>
           </div>
-          <p class="process-flow-desc">I bring the sketches to life as digital designs using tools like Figma.</p>
+          <p class="process-flow-desc">Translate sketches into low-fidelity layouts in tools like Figma, shaping structure first.</p>
         </div>
 
-        <div class="process-flow-step reveal">
-          <div class="process-flow-icon" style="animation-delay:3.6s;"><i data-lucide="sparkles" class="icon-md"></i></div>
+        <div class="process-flow-step">
+          <div class="process-flow-icon" style="animation-delay:4.8s;"><i data-lucide="sparkles" class="icon-md"></i></div>
           <div class="process-flow-head">
             <span class="process-flow-num">05</span>
-            <h3 class="process-flow-title">Get AI Inspiration</h3>
+            <h3 class="process-flow-title">AI-Assisted Exploration</h3>
           </div>
-          <p class="process-flow-desc">I use AI tools to explore ideas, generate variations and enhance creativity while designing.</p>
+          <p class="process-flow-desc">Bring AI tools into the process to explore extra directions and speed up iteration.</p>
         </div>
 
-        <div class="process-flow-step reveal">
-          <div class="process-flow-icon" style="animation-delay:4.5s;"><i data-lucide="users" class="icon-md"></i></div>
+        <div class="process-flow-step">
+          <div class="process-flow-icon" style="animation-delay:6.0s;"><i data-lucide="users" class="icon-md"></i></div>
           <div class="process-flow-head">
             <span class="process-flow-num">06</span>
-            <h3 class="process-flow-title">Collaborate</h3>
+            <h3 class="process-flow-title">Design Critique</h3>
           </div>
-          <p class="process-flow-desc">I discuss the designs with other team members and gather their ideas and feedback.</p>
+          <p class="process-flow-desc">Share the work with other team members and gather their perspectives on it.</p>
         </div>
 
-        <div class="process-flow-step reveal">
-          <div class="process-flow-icon" style="animation-delay:5.4s;"><i data-lucide="refresh-cw" class="icon-md"></i></div>
+        <div class="process-flow-step">
+          <div class="process-flow-icon" style="animation-delay:7.2s;"><i data-lucide="refresh-cw" class="icon-md"></i></div>
           <div class="process-flow-head">
             <span class="process-flow-num">07</span>
-            <h3 class="process-flow-title">Iterate</h3>
+            <h3 class="process-flow-title">Iteration</h3>
           </div>
-          <p class="process-flow-desc">I update and refine the designs based on the new ideas and feedback received.</p>
+          <p class="process-flow-desc">Fold that feedback and any new ideas back into the designs until the flow feels right.</p>
         </div>
 
-        <div class="process-flow-step reveal">
-          <div class="process-flow-icon" style="animation-delay:6.3s;"><i data-lucide="play" class="icon-md"></i></div>
+        <div class="process-flow-step">
+          <div class="process-flow-icon" style="animation-delay:8.4s;"><i data-lucide="play" class="icon-md"></i></div>
           <div class="process-flow-head">
             <span class="process-flow-num">08</span>
-            <h3 class="process-flow-title">Prototype</h3>
+            <h3 class="process-flow-title">Prototyping</h3>
           </div>
-          <p class="process-flow-desc">I prototype the designs to bring the full flow and interactions to life for testing.</p>
+          <p class="process-flow-desc">Bring the designs to life as an interactive prototype, ready to test and hand off.</p>
         </div>
 
-      </div>
-
-      <div class="process-values">
-        <span class="process-values-icon"><i data-lucide="heart" class="icon-sm"></i></span>
-        <span>User-centered</span>
-        <span class="process-values-dot">&#8226;</span>
-        <span>Collaborative</span>
-        <span class="process-values-dot">&#8226;</span>
-        <span>Iterative</span>
-        <span class="process-values-dot">&#8226;</span>
-        <span>Detail-oriented</span>
-        <span class="process-values-dot">&#8226;</span>
-        <span>Purpose-driven</span>
       </div>
 
     </div>
@@ -708,6 +685,13 @@
         <!-- Contact form column -->
         <div class="contact-form-wrap reveal">
           <form class="contact-form" id="contact-form" novalidate>
+
+            <!-- Web3Forms delivers submissions straight to your inbox,
+                 which works from a static GitHub Pages site (no backend
+                 needed). Get your own free Access Key at web3forms.com
+                 and replace the placeholder below with it. -->
+            <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY" />
+            <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" />
  
             <div class="form-row">
               <div class="form-group">

@@ -146,6 +146,188 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 })();
 
+
+  /* ── Process connector lines + staggered reveal
+     Draws the lines connecting the process-flow
+     cards using their actual rendered positions,
+     so it stays correct no matter how tall each
+     card's content makes it (desktop 4-column
+     layout only — hidden by CSS below that), and
+     reveals the cards one at a time (1 -> 8) when
+     the section scrolls into view, with each
+     connecting line fading in right after the
+     card it leads to.                            */
+  (function initProcessConnector() {
+    const flow = document.querySelector('.process-flow');
+    const svg  = flow?.querySelector('.process-connector');
+    if (!flow || !svg) return;
+
+    const DESKTOP_BREAKPOINT = 960; // matches the CSS grid-column breakpoint
+    const STAGGER = 130;            // ms between each card's reveal
+
+    let revealed = false;
+
+    function pointAt(el, side) {
+      const cardRect = el.getBoundingClientRect();
+      const flowRect = flow.getBoundingClientRect();
+      return {
+        x: (side === 'right' ? cardRect.right : cardRect.left) - flowRect.left,
+        y: cardRect.top - flowRect.top + cardRect.height / 2,
+      };
+    }
+
+    // Reveals every card in sequence, 1 -> 8. Safe to call more than
+    // once (e.g. on resize) — after the first run it just makes sure
+    // anything newly drawn is shown immediately, with no re-animation.
+    function applyCardReveal() {
+      const steps = Array.from(flow.querySelectorAll('.process-flow-step'));
+      steps.forEach((card, i) => {
+        card.style.transitionDelay = revealed ? '0ms' : `${i * STAGGER}ms`;
+        card.classList.add('process-visible');
+      });
+    }
+
+    // Reveals each connector path right after the card it leads into.
+    function applyConnectorReveal() {
+      const paths = Array.from(svg.querySelectorAll('.process-connector-line'));
+      paths.forEach((path) => {
+        const afterCard = Number(path.dataset.afterCard || 1);
+        const delay = revealed ? 0 : afterCard * STAGGER + 90;
+        path.style.transitionDelay = `${delay}ms`;
+        path.classList.add('process-visible');
+      });
+    }
+
+    function revealAll() {
+      applyCardReveal();
+      applyConnectorReveal();
+      revealed = true;
+    }
+
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            revealAll();
+            sectionObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    sectionObserver.observe(flow);
+
+    function draw() {
+      const steps = Array.from(flow.querySelectorAll('.process-flow-step'));
+      if (steps.length < 8) return;
+
+      const flowRect = flow.getBoundingClientRect();
+      svg.setAttribute('width', flowRect.width);
+      svg.setAttribute('height', flowRect.height);
+      svg.style.width  = `${flowRect.width}px`;
+      svg.style.height = `${flowRect.height}px`;
+
+      // userSpaceOnUse gradient needs real endpoint coordinates (an
+      // objectBoundingBox gradient would silently fail to render on
+      // perfectly horizontal/vertical segments, since their bounding
+      // box has zero height/width)
+      const gradient = svg.querySelector('#processFlowGradient');
+      if (gradient) {
+        gradient.setAttribute('x1', 0);
+        gradient.setAttribute('x2', flowRect.width);
+      }
+
+      // Clear previously drawn lines (keep the <defs> gradient)
+      svg.querySelectorAll('.process-connector-line').forEach((el) => el.remove());
+
+      if (window.innerWidth <= DESKTOP_BREAKPOINT) return; // no lines on 2/1-col layouts
+
+      const ns = 'http://www.w3.org/2000/svg';
+
+      // afterCard = which card (1-indexed) this line should wait for
+      // before it fades in.
+      function addPath(d, afterCard) {
+        const path = document.createElementNS(ns, 'path');
+        path.setAttribute('d', d);
+        path.setAttribute('class', 'process-connector-line');
+        path.dataset.afterCard = afterCard;
+        svg.appendChild(path);
+      }
+
+      // Straight links between consecutive cards within the same row —
+      // each one waits for the card it leads INTO.
+      [[0, 1], [1, 2], [2, 3], [4, 5], [5, 6], [6, 7]].forEach(([a, b]) => {
+        const p1 = pointAt(steps[a], 'right');
+        const p2 = pointAt(steps[b], 'left');
+        addPath(`M ${p1.x},${p1.y} L ${p2.x},${p2.y}`, b + 1);
+      });
+
+      // Looping link from the end of row 1 into the start of row 2.
+      // The line should sit centered in the empty space between row 1's
+      // card bottom and row 2's icon top (the icon overlaps upward into
+      // that gap, so it — not the card box — marks the visual start of
+      // row 2).
+      const c4 = pointAt(steps[3], 'right');
+      const c5 = pointAt(steps[4], 'left');
+      const row1BottomY = steps[3].getBoundingClientRect().bottom - flowRect.top;
+      const row2Icon     = steps[4].querySelector('.process-flow-icon');
+      const row2TopY     = row2Icon
+        ? row2Icon.getBoundingClientRect().top - flowRect.top
+        : steps[4].getBoundingClientRect().top - flowRect.top;
+      const midY = (row1BottomY + row2TopY) / 2;
+
+      const bulgeRight = flowRect.width + 36;
+      const bulgeLeft  = -36;
+      const r = 22; // corner radius — quarter-circle turns, not a curved "S"
+
+      // A proper rounded-rectangle path: straight segments joined by
+      // quarter-circle arcs at each turn, so every corner is a clean,
+      // consistent 90-degree round rather than a stretched curve.
+      addPath(
+        `M ${c4.x},${c4.y} ` +
+        `L ${bulgeRight - r},${c4.y} ` +
+        `A ${r},${r} 0 0 1 ${bulgeRight},${c4.y + r} ` +
+        `L ${bulgeRight},${midY - r} ` +
+        `A ${r},${r} 0 0 1 ${bulgeRight - r},${midY} ` +
+        `L ${bulgeLeft + r},${midY} ` +
+        `A ${r},${r} 0 0 0 ${bulgeLeft},${midY + r} ` +
+        `L ${bulgeLeft},${c5.y - r} ` +
+        `A ${r},${r} 0 0 0 ${bulgeLeft + r},${c5.y} ` +
+        `L ${c5.x},${c5.y}`,
+        5
+      );
+
+      // A short trailing arrow after the last card
+      const c8 = pointAt(steps[7], 'right');
+      const arrowEndX = c8.x + 38;
+      addPath(
+        `M ${c8.x},${c8.y} L ${arrowEndX},${c8.y} ` +
+        `M ${arrowEndX - 8},${c8.y - 6} L ${arrowEndX},${c8.y} L ${arrowEndX - 8},${c8.y + 6}`,
+        8
+      );
+
+      // If the section was already revealed before this (re)draw (e.g.
+      // triggered by a resize), show the freshly-drawn lines immediately
+      // instead of leaving them invisible or re-running the stagger.
+      if (revealed) applyConnectorReveal();
+    }
+
+    // Redraw once layout has settled, on resize, and once fonts/images
+    // finish loading (both can shift card heights after first paint).
+    requestAnimationFrame(draw);
+    window.addEventListener('load', draw);
+
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(draw, 150);
+    });
+
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(draw);
+    }
+  })();
+
   /* ── Skill cards auto-highlight ────────────
      Cycles a highlight effect through each card
      one by one, continuously, simulating hover 
@@ -184,14 +366,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  /* ── Contact form → mailto ─────────────────
-     On submit, validates fields then opens the
-     user's mail client addressed to Sithmi     */
-  const form  = document.getElementById('contact-form');
-  const toast = document.getElementById('toast');
+  /* ── Contact form → Web3Forms ──────────────
+     GitHub Pages has no backend, so a plain
+     mailto: link only works if the visitor has
+     a desktop mail client configured — many
+     don't, and the message silently never sends.
+     Web3Forms accepts the POST directly and
+     emails it to you, no backend required.     */
+  const form       = document.getElementById('contact-form');
+  const toast      = document.getElementById('toast');
+  const sendButton = form?.querySelector('.btn-send');
 
   if (form) {
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const name    = document.getElementById('name').value.trim();
@@ -208,16 +395,46 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Build mailto and trigger
-      const body = `Hi Sithmi,\n\nMy name is ${name}.\n\n${message}\n\nFrom: ${email}`;
-      const mailto = `mailto:snudapolawatta@gmail.com`
-        + `?subject=${encodeURIComponent(subject)}`
-        + `&body=${encodeURIComponent(body)}`;
+      const accessKey = form.querySelector('[name="access_key"]')?.value;
+      if (!accessKey || accessKey === 'YOUR_WEB3FORMS_ACCESS_KEY') {
+        showToast('Form isn\u2019t connected yet \u2014 add a Web3Forms access key.', true);
+        return;
+      }
 
-      window.location.href = mailto;
+      const originalLabel = sendButton?.innerHTML;
+      if (sendButton) {
+        sendButton.disabled = true;
+        sendButton.innerHTML = 'Sending\u2026';
+      }
 
-      showToast(`Opening your mail client… ✦`);
-      form.reset();
+      try {
+        const response = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            access_key: accessKey,
+            subject: `Portfolio contact: ${subject}`,
+            name, email,
+            message,
+            botcheck: form.querySelector('[name="botcheck"]')?.checked || false,
+          }),
+        });
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          showToast('Message sent \u2014 thanks for reaching out! \u2726');
+          form.reset();
+        } else {
+          showToast(result.message || 'Something went wrong. Please try again.', true);
+        }
+      } catch (err) {
+        showToast('Network error \u2014 please try again in a moment.', true);
+      } finally {
+        if (sendButton) {
+          sendButton.disabled = false;
+          sendButton.innerHTML = originalLabel;
+        }
+      }
     });
   }
 

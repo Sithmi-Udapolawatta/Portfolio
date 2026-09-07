@@ -336,8 +336,9 @@ section { padding: 6rem 2rem; }
  
 @media (prefers-reduced-motion: reduce) {
   .laptop-wrap { animation: none; }
-  .process-connector-line { animation: none; }
   .process-flow-icon { animation: none; }
+  .process-flow-step { animation: none; transition-duration: .01ms !important; transition-delay: 0ms !important; }
+  .process-connector-line { transition-duration: .01ms !important; transition-delay: 0ms !important; }
 }
  
 /* ── Laptop shell ───────────────────────────────────────────── */
@@ -661,11 +662,8 @@ section { padding: 6rem 2rem; }
 ════════════════════════════════════════════ */
 .process-bg { background: #eef6fb; }
 
-.process-header { max-width: 640px; margin: 0 auto 4.5rem; text-align: center; }
-.process-header * { text-align: center; }
-.process-header .section-label { text-align: center; }
-.process-header-title { max-width: 100%; margin-bottom: 1.1rem; }
-.process-subtitle { font-size: 1rem; color: var(--ink2); line-height: 1.75; }
+.process-header { max-width: 640px; margin: 0 0 4.5rem; }
+.process-header-title { margin-bottom: 0; }
 
 .process-flow {
   position: relative;
@@ -673,80 +671,120 @@ section { padding: 6rem 2rem; }
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   column-gap: 1.75rem;
-  row-gap: 90px;
+  row-gap: 150px;
 }
 
-/* Connector overlay — spans exactly from the row-1 icon centers down
-   to the row-2 icon centers (both rows' icons sit on their card's own
-   top edge, so this box = one fixed card height + the row gap). */
+/* Connector — drawn by JS to match the cards' actual rendered
+   positions (script.js: drawProcessConnectors). Solid gradient line,
+   no dash/flow animation on the line itself. */
 .process-connector {
   position: absolute;
   top: 0; left: 0;
-  width: 100%;
-  height: calc(240px + 90px);
   overflow: visible;
   z-index: 0;
+  pointer-events: none;
 }
 .process-connector-line {
   fill: none;
   stroke: url(#processFlowGradient);
-  stroke-width: 1.75;
+  stroke-width: 2.5;
   stroke-linecap: round;
-  opacity: .75;
-  vector-effect: non-scaling-stroke;
-  stroke-dasharray: 5 5;
-  animation: process-line-flow 2.4s linear infinite;
+  /* Fades in right after the card it leads into — see
+     applyConnectorReveal() in script.js */
+  opacity: 0;
+  transition: opacity .5s ease;
 }
-.pg-stop-light { stop-color: var(--accent2); }
+.process-connector-line.process-visible { opacity: 1; }
+.pg-stop-light { stop-color: var(--accent3); }
 .pg-stop-dark  { stop-color: var(--accent); }
 
-@keyframes process-line-flow {
-  to { stroke-dashoffset: -20; }
+/* Card — height fits its own content; the border is an animated
+   conic gradient ring with a bright rotating highlight — a clearly
+   visible "shine" chasing around the card's edge, rather than a
+   subtle color blend. Each card runs its own animation at a
+   slightly different speed and starting point (below), so the
+   shine travels independently on every card instead of all 8
+   moving in lockstep. */
+@property --process-border-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
 }
-
-.process-dot {
-  position: absolute;
-  width: 8px; height: 8px;
-  background: var(--accent2);
-  border: 2px solid var(--surface);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
-}
-
 .process-flow-step {
   position: relative;
   z-index: 1;
-  height: 240px;
   background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: 1.25rem;
+  border: 2px solid transparent;
+  background-image:
+    linear-gradient(var(--surface), var(--surface)),
+    conic-gradient(from var(--process-border-angle),
+      var(--border) 0deg,
+      var(--border) 255deg,
+      var(--accent2) 285deg,
+      #ffffff 300deg,
+      var(--accent2) 315deg,
+      var(--border) 345deg,
+      var(--border) 360deg);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
   padding: 2.75rem 1.4rem 1.6rem;
+  box-shadow: 0 6px 20px -8px rgba(15, 52, 96, 0.2);
+  animation-name: process-border-flow;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  /* Staggered reveal — starts hidden, JS adds .process-visible (with a
+     per-card transition-delay) as the section scrolls into view, so
+     the cards appear one at a time (1 -> 8) instead of all together. */
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .6s cubic-bezier(.16,.8,.3,1), transform .6s cubic-bezier(.16,.8,.3,1);
 }
+.process-flow-step.process-visible {
+  opacity: 1;
+  transform: none;
+}
+@keyframes process-border-flow {
+  to { --process-border-angle: 360deg; }
+}
+
+/* Distinct speed + starting offset per card — deliberately not a
+   clean multiple of one another, so the cards drift in and out of
+   phase with each other over time rather than repeating a pattern. */
+.process-flow-step:nth-of-type(1) { animation-duration: 4.1s; animation-delay: -0.2s; }
+.process-flow-step:nth-of-type(2) { animation-duration: 3.8s; animation-delay: -1.8s; }
+.process-flow-step:nth-of-type(3) { animation-duration: 4.6s; animation-delay: -0.9s; }
+.process-flow-step:nth-of-type(4) { animation-duration: 3.3s; animation-delay: -3.1s; }
+.process-flow-step:nth-of-type(5) { animation-duration: 4.9s; animation-delay: -1.4s; }
+.process-flow-step:nth-of-type(6) { animation-duration: 3.6s; animation-delay: -2.6s; }
+.process-flow-step:nth-of-type(7) { animation-duration: 4.3s; animation-delay: -0.5s; }
+.process-flow-step:nth-of-type(8) { animation-duration: 3.9s; animation-delay: -3.8s; }
 
 .process-flow-icon {
   position: absolute;
-  top: 0; left: 1.4rem;
-  width: 56px; height: 56px;
+  top: 0; left: 50%;
+  width: 45px; height: 45px;
   border-radius: 50%;
   background: var(--surface);
   border: 2px solid var(--accent3);
   color: var(--accent3);
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 8px 20px -8px rgba(15, 52, 96, 0.35);
-  transform: translateY(-50%) scale(1);
+  transform: translate(-50%, -50%) scale(1);
   transform-origin: center;
-  animation: process-icon-pulse 7.2s ease-in-out infinite;
+  animation: process-icon-pulse 9.6s ease-in-out infinite;
 }
+.process-flow-icon svg { width: 20px; height: 20px; }
 
-/* Only one icon's "turn" is active at a time — each icon uses the same
-   7.2s loop (8 steps x 0.9s) with a staggered animation-delay (set
-   inline per icon in the HTML), so the pulse visibly travels 1 -> 8
-   and then loops back to the start, continuously. */
+/* Only one icon's "turn" is active at a time — each icon shares the
+   same 9.6s loop (8 steps x 1.2s) with a staggered animation-delay
+   (set inline per icon in the HTML), so the pulse visibly travels
+   1 -> 8 and then loops back to the start, continuously. Base size
+   45px, growing to 52px at the peak (45 x 1.1556 = 52). */
 @keyframes process-icon-pulse {
-  0%, 100% { transform: translateY(-50%) scale(1); }
-  5%       { transform: translateY(-50%) scale(1.22); }
-  11%      { transform: translateY(-50%) scale(1); }
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  6%       { transform: translate(-50%, -50%) scale(1.1556); }
+  13%      { transform: translate(-50%, -50%) scale(1); }
 }
 
 .process-flow-head { display: flex; align-items: baseline; gap: .6rem; margin-bottom: .6rem; flex-wrap: wrap; }
@@ -761,26 +799,6 @@ section { padding: 6rem 2rem; }
 .process-flow-desc {
   font-size: .85rem; color: var(--ink2); line-height: 1.65;
 }
-
-.process-values {
-  margin-top: 3.5rem;
-  display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
-  gap: .7rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  padding: 1rem 1.75rem;
-  max-width: fit-content;
-  margin-left: auto; margin-right: auto;
-  font-size: .88rem; color: var(--ink2);
-}
-.process-values-icon {
-  display: flex; align-items: center; justify-content: center;
-  width: 28px; height: 28px; border-radius: 50%;
-  background: var(--tag-bg); color: var(--accent3);
-  margin-right: .3rem;
-}
-.process-values-dot { color: var(--muted); }
 
 /* ════════════════════════════════════════════
    SKILLS
@@ -1197,8 +1215,7 @@ footer {
   .about-exp-badge { right: 1rem; }
   .contact-layout { grid-template-columns: 1fr; }
   .process-flow { grid-template-columns: repeat(2, 1fr); row-gap: 2rem; }
-  .process-connector, .process-dot { display: none; }
-  .process-flow-step { height: auto; min-height: 210px; }
+  .process-connector { display: none; }
 }
 
 @media (max-width: 768px) {
