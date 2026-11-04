@@ -258,6 +258,8 @@ body {
   box-shadow: 0 30px 60px -20px rgba(15, 52, 96, 0.30);
 }
 .split-content { min-width: 0; }
+.overview-lead { margin: 1.65rem 0 0; font-size: 1rem; color: var(--ink2); line-height: 1.8; }
+.overview-lead[hidden] { display: none; }
 
 /* Story blocks: reused for Scope / User Roles / Key Screens etc. */
 .info-story { margin-top: 2.2rem; display: flex; flex-direction: column; gap: 1.8rem; }
@@ -277,10 +279,12 @@ body {
 }
 .tool-chips { display: flex; flex-wrap: wrap; gap: .5rem; }
 .tool-chip {
+  display: inline-flex; align-items: center; gap: .45rem;
   font-size: .78rem; font-weight: 500; color: var(--accent);
   background: var(--tag-bg); border: 1px solid var(--border);
   padding: .4rem .9rem; border-radius: 100px;
 }
+.tool-logo { width: 1rem; height: 1rem; object-fit: contain; flex: 0 0 auto; }
 
 
 /* ════════════════════════════════════════════
@@ -312,7 +316,7 @@ body {
 .ds-swatch strong { font-size: .74rem; font-weight: 600; color: var(--ink2); }
 .ds-swatch small { font-size: .65rem; color: var(--muted); font-family: monospace; letter-spacing: .01em; }
 
-.ds-image { width: 100%; border-radius: .85rem; display: block; }
+.ds-image { width: 100%; border-radius: 0rem; display: block; }
 .ds-placeholder {
   border: 1.5px dashed var(--border); border-radius: .85rem;
   padding: 2.75rem 1rem; text-align: center;
@@ -357,7 +361,7 @@ body {
   display: grid;
   grid-template-columns: auto minmax(260px, 360px);
   gap: 3.5rem;
-  align-items: start;
+  align-items: stretch;
   justify-content: start;
 }
 
@@ -368,12 +372,46 @@ body {
 
 /* Mobile screens stay centered in their column; web screens align to
    the left so the frame lines up with the section title above it. */
-.viewer-frame-col { display: flex; justify-content: center; min-width: 0; }
+.viewer-frame-col { position: relative; display: flex; justify-content: center; align-items: center; min-width: 0; }
 .viewer-frame-col:has(.screen-frame--web) { justify-content: flex-start; }
+
+/* Mobile device's column matches the web device's width (640px), so
+   switching the Mobile/Web tab doesn't jump the whole layout narrower/
+   wider. Rather than leaving that extra space bare (or filling it with
+   a flat block color), two soft blurred color glows sit behind the
+   phone — decorative, not a hard-edged box. */
+.viewer-frame-col:has(.screen-frame--mobile) {
+  width: 640px;
+  max-width: 100%;
+  padding: 2rem 0;
+}
+.viewer-frame-col:has(.screen-frame--mobile)::before,
+.viewer-frame-col:has(.screen-frame--mobile)::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(60px);
+}
+.viewer-frame-col:has(.screen-frame--mobile)::before {
+  width: 380px; height: 380px;
+  top: 50%; left: 34%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(72, 180, 224, 0.30) 0%, transparent 72%);
+}
+.viewer-frame-col:has(.screen-frame--mobile)::after {
+  width: 280px; height: 280px;
+  top: 62%; left: 68%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(15, 52, 96, 0.18) 0%, transparent 72%);
+}
+.viewer-frame-col > .screen-frame { position: relative; z-index: 1; }
 
 .viewer-side {
   display: flex; flex-direction: column; align-items: flex-start; gap: 2.2rem;
 }
+.viewer-next { margin-top: auto; }
 
 .viewer-caption { display: flex; flex-direction: column; gap: .55rem; }
 .viewer-index { font-family: var(--serif); font-style: italic; font-size: .85rem; color: var(--accent3); }
@@ -384,18 +422,19 @@ body {
   font-size: .68rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
   color: var(--muted); margin-bottom: 1rem;
 }
-.viewer-next-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: .65rem; }
+.viewer-next-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: .4rem; }
 .next-square {
-  width: 100%; aspect-ratio: 1 / 1; border-radius: .7rem; overflow: hidden;
+  width: 100%; aspect-ratio: 1 / 1; border-radius: .5rem; overflow: hidden;
   border: 2px solid var(--border); padding: 0; cursor: pointer; background: var(--surface);
   transition: border-color .2s, transform .2s, box-shadow .2s;
 }
-.next-square img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.next-square img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
 .next-square:hover { border-color: var(--accent3); transform: translateY(-2px); }
-.next-square.active { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15,52,96,.14); }
+.next-square.active { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(15,52,96,.14); }
 
 /* Device frame — web (browser chrome) */
 .screen-frame {
+  position: relative;
   border-radius: 16px;
   overflow: hidden;
   background: #1e2330;
@@ -424,6 +463,45 @@ body {
 
 .screen-frame-body { position: relative; background: #f0f2f5; overflow: hidden; }
 .screen-frame-body img { width: 100%; display: block; }
+
+/* Figma-prototype scroll effect: header/footer stay put, only the
+   middle image scrolls. Used whenever a screen has a `header` and/or
+   `footer` image (see the "screens" comment near the top of
+   project-script.js) — a screen with neither behaves exactly as
+   before (single cropped, non-scrolling image). */
+.screen-stack {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  gap: 0;
+  line-height: 0; /* belt-and-suspenders: kills any inline whitespace gap between the stacked images */
+}
+.screen-frame--web .screen-frame-body .screen-stack-header,
+.screen-frame--mobile .screen-frame-body .screen-stack-header,
+.screen-frame--mobile .screen-frame-body .screen-stack-footer {
+  flex-shrink: 0;
+  width: 100%;
+  height: auto;
+  object-fit: unset;
+  display: block;
+}
+.screen-stack-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;   /* old Edge/IE */
+}
+.screen-stack-scroll::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+.screen-frame--web .screen-frame-body .screen-stack-scroll .screen-stack-middle,
+.screen-frame--mobile .screen-frame-body .screen-stack-scroll .screen-stack-middle {
+  width: 100%;
+  height: auto;
+  object-fit: unset;
+  display: block;
+}
 
 .screen-expand {
   position: absolute; right: .85rem; bottom: .85rem;
@@ -466,29 +544,104 @@ body {
   width: 58px; height: 14px; border-radius: 8px; background: #14171f; z-index: 2;
 }
 
-/* Lightbox */
+/* Lightbox — opens at the design's real size (never enlarged past its
+   pixel size, so it stays as sharp as the file allows). Visitors zoom in/out
+   with the toolbar, Ctrl+wheel / pinch, double-click, or +/- keys; anything
+   bigger than the screen scrolls. */
 .lightbox {
   position: fixed; inset: 0; z-index: 500;
   background: rgba(11,15,20,0.92);
-  display: flex; align-items: center; justify-content: center;
-  padding: 3rem 1.5rem;
+  display: flex; align-items: flex-start;
+  overflow: auto;
+  padding: 3.5rem 1.5rem 5.5rem;
   opacity: 0; pointer-events: none;
   transition: opacity .25s ease;
 }
 .lightbox.open { opacity: 1; pointer-events: auto; }
-.lightbox img {
-  max-width: min(900px, 90vw); max-height: 86vh;
+.lightbox-stack {
+  margin: auto;            /* small designs centre; big ones scroll from the top-left */
+  flex-shrink: 0;
   border-radius: 12px;
+  overflow: hidden;
   box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+  line-height: 0;
+  transition: opacity .2s ease;
+  cursor: zoom-in;
 }
+.lightbox-stack.loading { opacity: 0; }
+.lightbox-stack img { display: block; width: 100%; height: auto; }
+
+.lightbox-zoom {
+  position: fixed; left: 50%; bottom: 1.5rem; z-index: 3;
+  transform: translateX(-50%);
+  display: inline-flex; align-items: center; gap: .25rem;
+  padding: .35rem; border-radius: 100px;
+  background: rgba(20, 24, 34, 0.92); border: 1px solid rgba(255,255,255,0.14);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+}
+.lightbox-zoom button {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none; color: #fff; cursor: pointer;
+  transition: background .2s, opacity .2s;
+}
+.lightbox-zoom button:hover:not(:disabled) { background: rgba(255,255,255,0.14); }
+.lightbox-zoom button:disabled { opacity: .35; cursor: default; }
+.lightbox-zoom svg { width: 16px; height: 16px; }
+.lightbox-zoom-level { min-width: 3.4rem; text-align: center; font-size: .8rem; font-weight: 500; font-variant-numeric: tabular-nums; }
 .lightbox-close {
-  position: absolute; top: 1.5rem; right: 1.75rem;
+  position: fixed; top: 1.5rem; right: 1.75rem; z-index: 2;
   width: 42px; height: 42px; border-radius: 50%;
   background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.25);
   color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer;
   transition: background .2s;
 }
 .lightbox-close:hover { background: rgba(255,255,255,0.2); }
+
+
+/* Scroll hint — pops up from the bottom of the screen only while the Designs
+   section is in view (see initScrollHint in project-script.js). */
+.scroll-toast {
+  position: fixed; left: 50%; bottom: 1.75rem; z-index: 400;
+  transform: translate(-50%, 28px);
+  display: flex; align-items: center; gap: .8rem;
+  max-width: calc(100vw - 2rem);
+  padding: .65rem .7rem .65rem .8rem; border-radius: 100px;
+  background: rgba(15, 52, 96, 0.96); color: #fff;
+  font-size: .86rem; line-height: 1.35;
+  box-shadow: 0 18px 40px -12px rgba(15, 52, 96, 0.6);
+  opacity: 0; pointer-events: none;
+  transition: opacity .45s ease, transform .45s cubic-bezier(.16,.8,.3,1);
+}
+.scroll-toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.scroll-toast-icon {
+  width: 32px; height: 32px; flex-shrink: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(72, 180, 224, 0.22); color: var(--accent2);
+}
+.scroll-toast-icon svg { width: 16px; height: 16px; animation: scroll-toast-bob 1.4s ease-in-out infinite; }
+.scroll-toast-text strong { font-weight: 600; }
+.scroll-toast-close {
+  width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none; color: rgba(255,255,255,0.7); cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.scroll-toast-close:hover { background: rgba(255,255,255,0.14); color: #fff; }
+.scroll-toast-close svg { width: 14px; height: 14px; }
+@keyframes scroll-toast-bob { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(3px); } }
+
+/* Gentle glow around the device while the hint is showing, linking the
+   pop-up to the thing it's talking about */
+.screen-frame.hint-pulse { animation: hint-ring 2s ease-in-out infinite; }
+@keyframes hint-ring {
+  0%, 100% { box-shadow: 0 40px 70px -20px rgba(15,52,96,.30), 0 10px 24px -10px rgba(15,52,96,.16), 0 0 0 0 rgba(72,180,224,.5); }
+  50%      { box-shadow: 0 40px 70px -20px rgba(15,52,96,.30), 0 10px 24px -10px rgba(15,52,96,.16), 0 0 0 12px rgba(72,180,224,0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-toast-icon svg, .screen-frame.hint-pulse { animation: none; }
+}
 
 
 /* ════════════════════════════════════════════
@@ -536,7 +689,7 @@ footer {
   .info-story-block { grid-template-columns: 1fr; gap: .4rem; }
 
   .screens-shell { grid-template-columns: 1fr; }
-  .viewer-next-grid { grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); }
+  .viewer-next-grid { grid-template-columns: repeat(8, 1fr); }
 
   .ds-grid { grid-template-columns: repeat(2, 1fr); }
 }
